@@ -64,11 +64,12 @@ export class StackedModal<R = any> extends EventTarget {
   }
 
   close = (...args: R extends void ? [] : [result: R]) => {
-    if (this.onBeforeClose?.() === false) {
+    const value = args[0]
+    
+    // Call onBeforeClose with the value BEFORE resolving
+    if (this.onBeforeClose?.(value as R) === false) {
       return false
     }
-
-    const value = args[0]
 
     this.dispatchEvent(new CustomEvent('close', { detail: value }))
     this.result.resolve(value as R)
@@ -80,7 +81,8 @@ export class StackedModal<R = any> extends EventTarget {
     return this.result.promise
   }
 
-  onBeforeClose?: () => boolean | void
+  // Updated: onBeforeClose now receives the value
+  onBeforeClose?: (value?: R) => boolean | void
 }
 
 function createDeferredPromise<T>() {

@@ -11,7 +11,7 @@
     return getContext(key)
   }
 
-  export function onBeforeClose(callback: () => void) {
+  export function onBeforeClose<R = any>(callback: (value?: R) => boolean | void) {
     try {
       const modal = getModal()
       modal.onBeforeClose = callback
